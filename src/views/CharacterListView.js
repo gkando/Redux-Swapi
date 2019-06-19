@@ -1,35 +1,64 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-
-import { CharacterList } from "../components";
+import { fetchCharacters } from "../actions/index";
+import CharacterList  from "../components/CharacterList";
 // import actions
 
-class CharacterListView extends React.Component {
-  constructor() {
-    super();
-  }
 
-  componentDidMount() {
-    // call our action
-  }
+const CharacterListView = props => {
 
-  render() {
-    if (this.props.fetching) {
-      // return something here to indicate that you are fetching data
-    }
+
+    useEffect(() => {
+        props.fetchCharacters();
+    }, []);
+
+console.log(props)
     return (
-      <div className="CharactersList_wrapper">
-        <CharacterList characters={this.props.characters} />
-      </div>
-    );
-  }
+      <React.Fragment>
+      { //Check if message failed
+        props.isLoading
+          ? <div> Fetching </div> 
+          : <CharacterList characters={props.characters} />
+      }
+
+      </React.Fragment>
+
+
+
+
+
+
+
+
+
+
+      // <React.Fragment>
+      //   <h2>STARWARS</h2>
+      //   {props.fetching && (
+      //     <Loader type="Ball-Triangle" color="#00BFFF" height="90" width="60" />
+      //   )}
+      //   <div>
+      //     {/* <CharacterList characters={props.characters} /> */}
+      //   </div>
+      //   {props.error && <p className="error">{props.error}</p>}
+      //   <Button color="info" onClick={fetchCharacters}>
+      //     🛰 See today's photo 📸
+      //   </Button>
+      // </React.Fragment>
+    )
+  
 }
 
 // our mapStateToProps needs to have two properties inherited from state
 // the characters and the fetching boolean
-export default connect(
-  null /* mapStateToProps replaces null here */,
-  {
-    /* action creators go here */
-  }
-)(CharacterListView);
+const mapStateToProps = state => {
+  return {
+    characters: state.characters,
+    isLoading: state.isLoading, 
+    error: state.error
+    };
+};
+
+
+export default connect(mapStateToProps, { fetchCharacters })(CharacterListView);
+
